@@ -10,11 +10,15 @@ struct LIO<P, Q, A> {
     }
     
     func flatMap<B, R>(_ f: @escaping (A) -> LIO<Q, R, B>) -> LIO<P, R, B> {
-        return LIO<P, R, B>(f(self.run()).run())
+        return LIO<P, R, B> {
+            () -> B in f(self.run()).run()
+        }
     }
     
     func map<B>(_ f: @escaping (A) -> B) -> LIO<P, Q, B> {
-        return LIO<P, Q, B>(f(self.run()))
+        return LIO<P, Q, B> {
+            () -> B in f(self.run())
+        }
     }
 }
 
